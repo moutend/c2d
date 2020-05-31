@@ -94,19 +94,14 @@ func getMap(path string) (map[rune]string, error) {
 		if strings.HasPrefix(line, "#") {
 			continue
 		}
-		cs := strings.Split(line, "\t")
 
-		if len(cs) < 2 {
+		rs := []rune(line)
+
+		if len(rs) < 3 || rs[1] != rune('	') {
 			continue
 		}
 
-		rs := []rune(cs[0])
-
-		if len(rs) < 1 {
-			continue
-		}
-
-		m[rs[0]] = cs[1]
+		m[rs[0]] = string(rs[2:])
 	}
 
 	return m, nil
