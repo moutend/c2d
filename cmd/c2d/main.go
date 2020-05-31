@@ -74,6 +74,8 @@ func run(args []string) error {
 		return nil
 	}
 
+	fmt.Println("undefined")
+
 	return nil
 }
 
