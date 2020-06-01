@@ -91,6 +91,23 @@ func getMap(path string) (map[rune]string, error) {
 	ss := strings.Split(string(data), "\n")
 
 	for _, line := range ss {
+		switch {
+		case strings.HasPrefix(line, `"#"`):
+			if len(line) > 4 {
+				m[rune('#')] = string([]rune(line)[4:])
+			}
+			continue
+		case strings.HasPrefix(line, `"\n"`):
+			if len(line) > 5 {
+				m[rune('\n')] = string([]rune(line)[5:])
+			}
+			continue
+		case strings.HasPrefix(line, `"\r"`):
+			if len(line) > 5 {
+				m[rune('\r')] = string([]rune(line)[5:])
+			}
+			continue
+		}
 		if strings.HasPrefix(line, "#") {
 			continue
 		}
