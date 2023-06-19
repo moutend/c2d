@@ -1,3 +1,3 @@
 module github.com/moutend/c2d
 
-go 1.13
+go 1.20
