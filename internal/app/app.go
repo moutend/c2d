@@ -40,10 +40,20 @@ func New() (*App, error) {
 	return a, nil
 }
 
+func (a *App) SetDebug(logger *log.Logger) {
+	if logger == nil {
+		return
+	}
+
+	a.debug = logger
+}
+
 func (a *App) SetLanguages(languages []string) {
 	a.languages = []string{}
 
 	for i := range languages {
 		a.languages = append(a.languages, strings.Join([]string{"locale", languages[i]}, string(filepath.Separator)))
 	}
+
+	a.debug.Printf("Languages: %+v\n", a.languages)
 }

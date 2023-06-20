@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"log"
 	"os"
 
 	"github.com/moutend/c2d/internal/app"
@@ -19,6 +20,9 @@ func findCommandRunE(cmd *cobra.Command, args []string) error {
 
 	if err != nil {
 		return err
+	}
+	if yes, _ := cmd.Flags().GetBool("debug"); yes {
+		a.SetDebug(log.New(cmd.ErrOrStderr(), "Debug: ", 0))
 	}
 
 	languages, err := cmd.Flags().GetStringSlice("languages")

@@ -28,6 +28,8 @@ func (a *App) DownloadDictionaryFile(repoURL *url.URL, path string) error {
 
 	targetURL := repoURL.JoinPath(path)
 
+	a.debug.Println("Download:", targetURL)
+
 	res, err := http.Get(targetURL.String())
 
 	if err != nil {
@@ -36,8 +38,11 @@ func (a *App) DownloadDictionaryFile(repoURL *url.URL, path string) error {
 	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("unexpected HTTP status: %s: %s", res.Status, targetURL)
 	}
+	outputPath := filepath.Join(dir, base)
 
-	file, err := os.Create(filepath.Join(dir, base))
+	a.debug.Println("Create:", outputPath)
+
+	file, err := os.Create(outputPath)
 
 	if err != nil {
 		return err

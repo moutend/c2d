@@ -84,6 +84,8 @@ func (a *App) LoadDictionaryFiles() error {
 }
 
 func (a *App) LoadDictionaryFile(path string) error {
+	a.debug.Println("Open:", path)
+
 	file, err := os.Open(path)
 
 	if err != nil {
