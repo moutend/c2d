@@ -139,13 +139,56 @@ func (a *App) LoadDictionaryFile(path string) error {
 	scanner.Split(bufio.ScanLines)
 
 	for scanner.Scan() {
-		columns := strings.Split(scanner.Text(), "\t")
+		text := scanner.Text()
+
+		if strings.HasPrefix(text, "#") {
+			continue
+		}
+
+		columns := strings.Split(text, "\t")
+
 		if len(columns) < 2 || columns[0] == "" {
 			continue
 		}
 
-		r := []rune(columns[0])[0]
+		runes := []rune(columns[0])
+
+		if len(runes) > 1 && runes[0] != '\\' {
+			continue
+		}
+
+		r := runes[0]
+
+		switch {
+		case strings.HasPrefix(text, "\\b"):
+			r = '\b'
+		case strings.HasPrefix(text, "\\n"):
+			r = '\n'
+		case strings.HasPrefix(text, "\\r"):
+			r = '\r'
+		case strings.HasPrefix(text, "\\t"):
+			r = '\t'
+		case strings.HasPrefix(text, "\\\""):
+			r = '"'
+		case strings.HasPrefix(text, "\\\\"):
+			r = '\\'
+		case strings.HasPrefix(text, "\\#"):
+			r = '#'
+		case strings.HasPrefix(text, "\\'"):
+			r = '\''
+		}
+
 		description := columns[len(columns)-1]
+
+		if len(columns) > 2 {
+			switch description {
+			case "some", "most", "none", "all":
+				description = columns[len(columns)-2]
+			}
+		}
+		if len(columns) > 2 && columns[len(columns)-2] == "char" && columns[len(columns)-1] == "always" {
+			description = columns[len(columns)-3]
+		}
 
 		a.dictionary[r] = description
 	}

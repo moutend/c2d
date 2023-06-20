@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"os"
+
 	"github.com/moutend/c2d/internal/app"
 	"github.com/spf13/cobra"
 )
@@ -13,10 +15,6 @@ var findCommand = &cobra.Command{
 }
 
 func findCommandRunE(cmd *cobra.Command, args []string) error {
-	if len(args) < 1 || len(args[0]) == 0 {
-		return nil
-	}
-
 	a, err := app.New()
 
 	if err != nil {
@@ -32,7 +30,28 @@ func findCommandRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	r := []rune(args[0])[0]
+	filePath, err := cmd.Flags().GetString("file")
+
+	if err != nil {
+		return err
+	}
+
+	var r rune
+
+	if filePath != "" {
+		data, err := os.ReadFile(filePath)
+
+		if err != nil {
+			return err
+		}
+		if len(data) < 1 {
+			return nil
+		}
+
+		r = []rune(string(data))[0]
+	} else {
+		r = []rune(args[0])[0]
+	}
 
 	cmd.Println(a.Find(r))
 
@@ -41,5 +60,7 @@ func findCommandRunE(cmd *cobra.Command, args []string) error {
 
 func init() {
 	RootCommand.AddCommand(findCommand)
+
+	findCommand.PersistentFlags().StringP("file", "f", "", "read from file")
 	findCommand.PersistentFlags().StringSliceP("languages", "l", []string{}, "target languages (e.g. 'ja') (default: empty)")
 }
