@@ -10,7 +10,6 @@ import (
 )
 
 func (a *App) DownloadDictionaryFiles(repoURL *url.URL, paths ...string) error {
-	repoURL, _ = url.Parse("https://raw.githubusercontent.com/nvdajp/nvdajp/alphajp")
 	for _, path := range paths {
 		if err := a.DownloadDictionaryFile(repoURL, path); err != nil {
 			return err
