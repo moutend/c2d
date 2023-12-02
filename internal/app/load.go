@@ -101,7 +101,9 @@ func (a *App) LoadDictionaryFile(path string) error {
 	for scanner.Scan() {
 		text := scanner.Text()
 
-		if strings.HasPrefix(text, "#") {
+		switch {
+		case strings.HasPrefix(text, "#"),
+			strings.HasSuffix(text, "norep"):
 			continue
 		}
 
